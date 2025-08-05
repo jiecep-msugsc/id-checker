@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIECEP ID Checker</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #141414;
+            color: #ffffff;
+        }
+        h1 {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #bbbbbb;
+            margin-bottom: 20px;
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+            align-items: center;
+        }
+        input {
+            padding: 12px;
+            width: 100%;
+            max-width: 400px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        button {
+            padding: 12px 24px;
+            background-color: #92e0ff;
+            color: rgb(0, 0, 0);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            max-width: 400px;
+            transition: transform 0.3s ease, background-color 0.3s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        #message {
+            margin: 20px 0;
+            color: #d9534f;
+            font-weight: bold;
+            min-height: 24px;
+        }
+        #imageContainer {
+            margin: 30px auto;
+            display: none;
+            max-width: 500px;
+            animation: fadeIn 0.5s ease-out;
+            text-align: center;
+        }
+        #imageContainer img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        #downloadBtn {
+            margin: 20px auto 0;
+            display: none;
+            background-color: #92e0ff;
+            color: black;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            input, button {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>JIECEP ID Checker</h1>
+    <p>Enter your student ID to reveal your JIECEP ID</p>
+    
+    <div class="input-container">
+        <input type="text" id="textInput" placeholder="Example: 2024-1234" autocomplete="off">
+        <button onclick="checkText()">Check JIECEP ID</button>
+    </div>
+    
+    <div id="imageContainer">
+        <img id="displayImage" src="" alt="Display Image">
+        <button id="downloadBtn" onclick="downloadImage()">Download Image</button>
+    </div>
+
+    <div id="message"></div>
+
+    <script>
+        const textImageMap = {
+            "2024-1234": "2024-1234.png",
+        };
+
+        function downloadImage() {
+            const imageUrl = document.getElementById('displayImage').src;
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = 'jiecep_id_' + document.getElementById('textInput').value.trim() + '.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function checkText() {
+            const inputText = document.getElementById('textInput').value.trim();
+            const messageElement = document.getElementById('message');
+            const imageContainer = document.getElementById('imageContainer');
+            const displayImage = document.getElementById('displayImage');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            // Reset UI
+            imageContainer.style.display = 'none';
+            downloadBtn.style.display = 'none';
+            messageElement.textContent = '';
+            
+            if (!inputText) {
+                messageElement.textContent = 'Please enter your student ID';
+                return;
+            }
+            
+            if (textImageMap[inputText]) {
+                displayImage.src = textImageMap[inputText];
+                imageContainer.style.display = 'block';
+                downloadBtn.style.display = 'block';
+                imageContainer.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                messageElement.textContent = 'ID not found. Try: 2024-1234';
+            }
+        }
+        
+        // Enter key support
+        document.getElementById('textInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkText();
+        });
+        
+        // Auto-focus input on load
+        window.onload = () => document.getElementById('textInput').focus();
+    </script>
+</body>
+</html>
